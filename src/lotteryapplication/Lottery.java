@@ -15,25 +15,65 @@ import java.util.Scanner;
 
 public class Lottery {
     private int[] lotteryNumbers = new int[6];
-    private int[] line1 = new int[6];
-    private int[] line2 = new int[6];
-    private int[] line3 = new int[6];
     private int[][] userLines = new int[3][6];
+    int[] lineCounter = new int[3];
+    int[] winningCounter = new int[3];
     private Scanner input = new Scanner(System.in);
     
-    public Lottery(int[] l1, int[] l2, int[] l3) {
-        this.line1 = l1;
-        this.line2 = l2;
-        this.line3 = l3;
-    }
     
     public Lottery() {}
+    
+    public void run() {
+        generateLotteryNumbers();
+        printNumbers();
+        getUserNumbers();
+        checkNumbers();
+        getWinnings();
+        printResults();
+    }
+    
+    private void getWinnings() {
+        for(int i = 0; i < lineCounter.length; i++){
+            if(lineCounter[i] == 6) {
+                winningCounter[i] = 4000000;
+            } else if(lineCounter[i] == 5 ) {
+                winningCounter[i] = 25000;
+            } else if(lineCounter[i] == 4) {
+                winningCounter[i] = 250;
+            } else if(lineCounter[i] == 3) {
+                winningCounter[i] = 50;
+            } else {
+                winningCounter[i] = 0;
+            }
+        }
+    }
+    
+    private void printResults() {
+        int totalWinnings = 0;
+        for(int i = 0; i < lineCounter.length; i++){
+            System.out.print("You guessed " + lineCounter[i] + " numbers on line " + (i + 1) + ",");
+            totalWinnings += winningCounter[i];
+        }
+        System.out.println("Your total winnings are €" + totalWinnings + ".");
+    }
     
     private void generateLotteryNumbers() {
         Random randomNum = new Random();
         
         for(int i = 0; i < lotteryNumbers.length; i++) {
             lotteryNumbers[i] = randomNum.nextInt(46) + 1;
+        }
+    }
+    
+    private void checkNumbers() {
+        // Go through each line
+        for(int line = 0; line < userLines.length; line++) {
+            // Go through each number
+            for(int number = 0; number < userLines[line].length; number++) {
+                if(checkIfNumberAlready(lotteryNumbers, userLines[line][number])) {
+                    lineCounter[line]++;
+                }
+            }
         }
     }
     
@@ -51,7 +91,7 @@ public class Lottery {
     }
     
     // Returns TRUE if number is in array
-    public boolean checkIfNumberAlready(int[] array, int num) {
+    private boolean checkIfNumberAlready(int[] array, int num) {
         for(int i = 0; i < array.length; i++) {
             if(array[i] == num) {
                 //System.out.println(array[i] + " == " + num);

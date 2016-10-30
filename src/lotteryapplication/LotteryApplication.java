@@ -18,13 +18,7 @@ public class LotteryApplication {
         // TODO code application logic here
         Lottery test = new Lottery();
         
-        int[] nums = new int[3];
-        nums[1] = 1;
-        nums[2] = 2;
-        
-        //test.printNumbers();
-        test.getUserNumbers();
-        System.out.println(test.checkIfNumberAlready(nums, 21));
+        test.run();
     }
     
 }
