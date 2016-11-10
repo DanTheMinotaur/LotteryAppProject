@@ -25,10 +25,10 @@ public class Lottery {
     
     public void run() {
         generateLotteryNumbers();
-        printNumbers();
         getUserNumbers();
         checkNumbers();
         getWinnings();
+        printNumbers();
         printResults();
     }
     
@@ -48,6 +48,7 @@ public class Lottery {
         }
     }
     
+    // Prints the results and winnings 
     private void printResults() {
         int totalWinnings = 0;
         for(int i = 0; i < lineCounter.length; i++){
@@ -87,31 +88,14 @@ public class Lottery {
     
     // Method to print the lottery numbers
     public void printNumbers() {
+        System.out.println("And the winning numbers are...");
         for(int i = 0; i < lotteryNumbers.length; i++) {
             System.out.println(lotteryNumbers[i]);
         }
     }
-    
-    // method to check if selected number is in correct range
-    // returns TRUE if number is within range
-    private boolean checkRange(int num) {
-        return num > 0 && num <= 47;
-    }
-    
-    // Method to check if a certain number is in an array
-    // Returns TRUE if number is in array
-    private boolean checkIfNumberAlready(int[] array, int num) {
-        for(int i = 0; i < array.length; i++) {
-            if(array[i] == num) {
-                //System.out.println(array[i] + " == " + num);
-                return true;
-            }
-        }
-        return false;
-    }
-    
+
     // Method to get users selections 
-    public void getUserNumbers() {
+    private void getUserNumbers() {
         int choice = 0;
         
         // Start looping through lines
@@ -138,4 +122,23 @@ public class Lottery {
             }
         }
     }
+    
+    // method to check if selected number is in correct range
+    // returns TRUE if number is within range
+    private boolean checkRange(int num) {
+        return num > 0 && num <= 47;
+    }
+    
+    // Method to check if a certain number is in an array
+    // Returns TRUE if number is in array
+    private boolean checkIfNumberAlready(int[] array, int num) {
+        for(int i = 0; i < array.length; i++) {
+            if(array[i] == num) {
+                //System.out.println(array[i] + " == " + num);
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
