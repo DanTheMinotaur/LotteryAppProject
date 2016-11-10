@@ -51,25 +51,33 @@ public class Lottery {
     private void printResults() {
         int totalWinnings = 0;
         for(int i = 0; i < lineCounter.length; i++){
-            System.out.print("You guessed " + lineCounter[i] + " numbers on line " + (i + 1) + ",");
+            System.out.println("You guessed " + lineCounter[i] + " numbers on line " + (i + 1) + ",");
             totalWinnings += winningCounter[i];
         }
-        System.out.println("Your total winnings are €" + totalWinnings + ".");
+        if(totalWinnings == 0) {
+            System.out.println("Sorry you didn't win anything AT ALL loser!!!");
+        } else {
+            System.out.println("Your total winnings are €" + totalWinnings + ". Go on Holidays!!!");
+        }
     }
     
+    // Method that creates the lottery numbers
     private void generateLotteryNumbers() {
+        // Create new random object
         Random randomNum = new Random();
-        
+        // Loop through array and add new random number to each
         for(int i = 0; i < lotteryNumbers.length; i++) {
             lotteryNumbers[i] = randomNum.nextInt(46) + 1;
         }
     }
     
+    // Method that will check if numbers are the same
     private void checkNumbers() {
         // Go through each line
         for(int line = 0; line < userLines.length; line++) {
             // Go through each number
             for(int number = 0; number < userLines[line].length; number++) {
+                // checks if number is already in the lottery numbers array and increments the line counter array with a number of correct selections so that winnings can be calculated
                 if(checkIfNumberAlready(lotteryNumbers, userLines[line][number])) {
                     lineCounter[line]++;
                 }
@@ -77,8 +85,8 @@ public class Lottery {
         }
     }
     
+    // Method to print the lottery numbers
     public void printNumbers() {
-        generateLotteryNumbers();
         for(int i = 0; i < lotteryNumbers.length; i++) {
             System.out.println(lotteryNumbers[i]);
         }
@@ -90,6 +98,7 @@ public class Lottery {
         return num > 0 && num <= 47;
     }
     
+    // Method to check if a certain number is in an array
     // Returns TRUE if number is in array
     private boolean checkIfNumberAlready(int[] array, int num) {
         for(int i = 0; i < array.length; i++) {
@@ -101,6 +110,7 @@ public class Lottery {
         return false;
     }
     
+    // Method to get users selections 
     public void getUserNumbers() {
         int choice = 0;
         
@@ -113,6 +123,7 @@ public class Lottery {
                 choice = input.nextInt();
                 // Check if choice is within correct range.
                 if(checkRange(choice)){
+                    // Checks if user has already selected this number
                     if(!checkIfNumberAlready(userLines[line], choice)) {
                         userLines[line][num] = choice;
                     } else {
