@@ -16,9 +16,13 @@ public class LotteryApplication {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Lottery test = new Lottery();
+        //Lottery test = new Lottery();
         
-        test.run();
+        //test.run();
+        
+        LotteryGUI test = new LotteryGUI();
+        
+        test.setVisible(true);
     }
     
 }

@@ -95,7 +95,7 @@ public class Lottery {
     }
 
     // Method to get users selections 
-    private void getUserNumbers() {
+    public void getUserNumbers() {
         int choice = 0;
         
         // Start looping through lines
