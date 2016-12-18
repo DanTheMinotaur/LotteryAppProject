@@ -10,118 +10,93 @@ package lotteryapplication;
  * @author x15004091
  */
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
+import jdk.jfr.events.FileWriteEvent;
 
 public class Lottery {
     private int[] lotteryNumbers = new int[6];
     private int[][] userLines = new int[3][6];
-    int[] lineCounter = new int[3];
-    int[] winningCounter = new int[3];
-    private Scanner input = new Scanner(System.in);
+    private ArrayList<int[]> lotterLines = new ArrayList<>();
+    private int[] lineCounter;
+    private int[] winningCounter;
     
     
-    public Lottery() {}
-    
-    public void run() {
+    // Generate Lottery Numbers When Object is Created
+    public Lottery() {
         generateLotteryNumbers();
-        getUserNumbers();
-        checkNumbers();
-        getWinnings();
-        printNumbers();
-        printResults();
+    }
+
+    public String runGUIImplementation() {
+        //generateLotteryNumbers();
+        //printNumbers()
+        checkLines();
+        return printResults();
+        
+        //return "ran";
     }
     
-    private void getWinnings() {
-        for(int i = 0; i < lineCounter.length; i++){
-            if(lineCounter[i] == 6) {
-                winningCounter[i] = 4000000;
-            } else if(lineCounter[i] == 5 ) {
-                winningCounter[i] = 25000;
-            } else if(lineCounter[i] == 4) {
-                winningCounter[i] = 250;
-            } else if(lineCounter[i] == 3) {
-                winningCounter[i] = 50;
+    // Returns String of lottery numbers
+    public int[] getLotteryResults() {
+        return lotteryNumbers;
+    }
+    
+    // Set Lines
+    public void setLine(int[] line) {
+        this.lotterLines.add(line);
+        // test
+        //printArray(line);
+    }
+    
+    private String printResults(int[] arr) {
+        StringBuilder output = new StringBuilder();
+        for(int i = 0; i < arr.length; i++) {
+            if((arr.length - 1) == i) {
+                output.append(arr[i]);
+                System.out.println(i);
+                System.out.println(arr.length);
             } else {
-                winningCounter[i] = 0;
+                output.append(arr[i]).append(", ");
+                System.out.println(i);
+                System.out.println(arr.length);
             }
         }
+        return output.toString();
     }
     
-    // Prints the results and winnings 
-    private void printResults() {
-        int totalWinnings = 0;
+    // Calculate Winnings
+    private void getWinnings() {
+        winningCounter = new int[lineCounter.length];
         for(int i = 0; i < lineCounter.length; i++){
-            System.out.println("You guessed " + lineCounter[i] + " numbers on line " + (i + 1) + ",");
-            totalWinnings += winningCounter[i];
-        }
-        if(totalWinnings == 0) {
-            System.out.println("Sorry you didn't win anything AT ALL loser!!!");
-        } else {
-            System.out.println("Your total winnings are €" + totalWinnings + ". Go on Holidays!!!");
-        }
-    }
-    
-    // Method that creates the lottery numbers
-    private void generateLotteryNumbers() {
-        // Create new random object
-        Random randomNum = new Random();
-        // Loop through array and add new random number to each
-        for(int i = 0; i < lotteryNumbers.length; i++) {
-            lotteryNumbers[i] = randomNum.nextInt(46) + 1;
-        }
-    }
-    
-    // Method that will check if numbers are the same
-    private void checkNumbers() {
-        // Go through each line
-        for(int line = 0; line < userLines.length; line++) {
-            // Go through each number
-            for(int number = 0; number < userLines[line].length; number++) {
-                // checks if number is already in the lottery numbers array and increments the line counter array with a number of correct selections so that winnings can be calculated
-                if(checkIfNumberAlready(lotteryNumbers, userLines[line][number])) {
-                    lineCounter[line]++;
-                }
+            switch (lineCounter[i]) {
+                case 6:
+                    winningCounter[i] = 4000000;
+                    break;
+                case 5:
+                    winningCounter[i] = 25000;
+                    break;
+                case 4:
+                    winningCounter[i] = 250;
+                    break;
+                case 3:
+                    winningCounter[i] = 50;
+                    break;
+                default:
+                    winningCounter[i] = 0;
+                    break;
             }
-        }
-    }
-    
-    // Method to print the lottery numbers
-    public void printNumbers() {
-        System.out.println("And the winning numbers are...");
-        for(int i = 0; i < lotteryNumbers.length; i++) {
-            System.out.println(lotteryNumbers[i]);
         }
     }
 
-    // Method to get users selections 
-    public void getUserNumbers() {
-        int choice = 0;
-        
-        // Start looping through lines
-        for(int line = 0; line < userLines.length; line++) {
-            System.out.print("Enter line " + (line + 1) + " here: \n");
-            // Start looping through each line
-            for(int num = 0; num < userLines[line].length; num++) {
-                System.out.print("Enter Number[Between 1 and 47] " + (num + 1) + ": ");
-                choice = input.nextInt();
-                // Check if choice is within correct range.
-                if(checkRange(choice)){
-                    // Checks if user has already selected this number
-                    if(!checkIfNumberAlready(userLines[line], choice)) {
-                        userLines[line][num] = choice;
-                    } else {
-                        System.out.println("Sorry you already picked that number, Try again");
-                        num -= 1;
-                    }
-                } else {
-                    System.out.println("Sorry that is not a number between 1 and 47 try again!");
-                    // Decrement counter because need to repeat the step in the loop
-                    num -= 1;
-                }
-            }
-        }
-    }
+    /*
+        Helper Methods
+    
+    */
     
     // method to check if selected number is in correct range
     // returns TRUE if number is within range
@@ -140,5 +115,85 @@ public class Lottery {
         }
         return false;
     }
+
     
+    // Method that creates the lottery numbers
+    private void generateLotteryNumbers() {
+        // Create new random object
+        Random randomNum = new Random();
+        int curNum;
+        // Loop through array and add new random number to each
+        for(int i = 0; i < lotteryNumbers.length; i++) {
+            curNum = randomNum.nextInt(46) + 1;
+            if(!checkIfNumberAlready(lotteryNumbers, curNum)) {
+                lotteryNumbers[i] = curNum;
+            } else {
+                i--;
+            }
+        }
+    }
+    
+    // Loops through each line in the arraylist
+    private void checkLines() {
+        // Sets line counter array to length of lines
+        lineCounter = new int[lotterLines.size()];
+        
+        // Count what line is currently being checked 
+        int index = 0;
+        
+        for(int[] line : lotterLines) {
+            //System.out.println(line.toString());
+            checkNumber(line, index);
+            index += 1;
+        }
+    }
+    
+    
+    private void checkNumber(int[] line, int index) {
+        for(int number = 0; number < line.length; number++) {
+            if(checkIfNumberAlready(lotteryNumbers, line[number])) {
+                System.out.println("You guessed correctly");
+                lineCounter[index] += 1;
+            }
+        }
+    }
+            
+    // Prints the results and winnings 
+    private String printResults() {
+        getWinnings();
+        int totalWinnings = 0;
+        StringBuilder result = new StringBuilder();
+        result.append("The Winning Numbers are: ").append(printResults(lotteryNumbers)).append("\n");
+        for(int i = 0; i < lineCounter.length; i++){
+            result.append("You guessed ").append(lineCounter[i]).append(" numbers on line ").append(i + 1).append(",\n");
+            totalWinnings += winningCounter[i];
+        }
+        if(totalWinnings == 0) {
+            result.append("Sorry you didn't win anything AT ALL loser!!!");
+        } else {
+            result.append("Your total winnings are €").append(totalWinnings).append(". Go on Holidays!!!");
+        }
+        return result.toString();
+    }
+    
+    /*
+        Export Methods
+    */
+    
+    public void exportLotteryResults() {
+        try {
+            File f = new File("export/lotteryData.txt");
+            FileWriter fW = new FileWriter(f);
+            BufferedWriter bW = new BufferedWriter(fW);
+            bW.write(printResults());
+            bW.close();
+            System.out.println("File Written");
+        } catch (FileNotFoundException e) {
+            System.out.println("File wasn't found");
+        } catch (IOException e) {
+            System.out.println("File Reading failed");
+        } catch (Exception e) {
+            System.out.println("Something bad happened!");
+        }
+    }
 }
